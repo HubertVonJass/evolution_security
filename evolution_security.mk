@@ -18,7 +18,7 @@
 #
 
 # Define security directory
-PROD_CERTS := vendor/evolution/build/target/product/security
+PROD_CERTS := /home/user/android/evolutionx/vendor/evolution/build/target/product/security/keys
 
 # Somehow, our build system managed to not include releasekey in which we have to
 # investigate,

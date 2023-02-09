@@ -1,12 +1,20 @@
 #!/bin/bash
 
-# Example of subject as pointed out by AOSP
-# subject='/C=US/ST=California/L=Mountain View/O=Android/OU=Android/CN=Android/emailAddress=android@android.com'
+company_name = $1
 
-subject='/C=JP/ST=Tokyo/L=Tokyo/O=Haruka LLC./OU=Haruka LLC./CN=Haruka LLC./emailAddress=legal@evolution-x.org'
-for x in testkey releasekey platform shared media networkstack; do \
-    ../../../../../../development/tools/make_key ./$x "$subject"; \
-done
+cd ~/android/evolutionx/vendor/evolution/build/target/product/security
 
-openssl genrsa -out evolution_rsa2048.pem 2048
-openssl genrsa -out evolution_rsa4096.pem 4096
+    ../../../../../../development/tools/make_key releasekey '/CN=$company_name/'
+    ../../../../../../development/tools/make_key platform '/CN=$company_name/'
+    ../../../../../../development/tools/make_key shared '/CN=$company_name/'
+    ../../../../../../development/tools/make_key media '/CN=$company_name/'
+    ../../../../../../development/tools/make_key networkstack '/CN=$company_name/'
+    ../../../../../../development/tools/make_key sdk_sandbox '/CN=$company_name/'
+    ../../../../../../development/tools/make_key bluetooth '/CN=$company_name/'
+
+    
+openssl genrsa 4096 | openssl pkcs8 -topk8 -scrypt -out avb.pem
+    
+    ../../../../../../external/avb/avbtool extract_public_key --key avb.pem --output avb_pkmd.bin
+
+signify-openbsd -G -n -p factory.pub -s factory.sec
